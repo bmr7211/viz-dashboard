@@ -1,0 +1,114 @@
+/* ===== 디자인 값(토큰) ===== */
+:root {
+  --color-bg: #ffffff;
+  --color-panel: #ffffff;
+  --color-fg: #1b1b1b;
+  --color-fg-muted: #5c5c5c;
+  --color-border-line: #e2e2e2;
+  --color-bad: #c0392b;
+  --chart-grid: #ececec;
+  --chart-axis: #c8c8c8;
+  --chart-reference: #8a8a8a;
+
+  --pad-xs: 4px;  --pad-sm: 8px;  --pad-md: 16px;  --pad-lg: 24px;
+  --gap-xs: 4px;  --gap-sm: 8px;  --gap-md: 16px;  --gap-lg: 24px;
+  --fs-title: 28px;  --fs-heading: 18px;  --fs-body: 15px;  --fs-caption: 13px;
+  --fw-medium: 600;
+  --radius: 8px;
+  --shadow-popover: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--color-bg); }
+
+/* ===== 페이지 전체 ===== */
+.vz {
+  font-family: 'Noto Sans KR', system-ui, -apple-system, 'Apple SD Gothic Neo', sans-serif;
+  color: var(--color-fg);
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-block: var(--pad-lg);
+  padding-inline: max(16px, 3vw);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-lg);
+}
+.vz button, .vz select, .vz input { font-family: inherit; }
+
+/* 머리말 */
+.vz-head { display: flex; flex-direction: column; gap: var(--gap-xs); }
+.vz-title { font-weight: 600; font-size: var(--fs-title); margin: 0; text-wrap: balance; }
+.vz-sub { color: var(--color-fg-muted); font-size: var(--fs-body); margin: 0; max-width: 70ch; }
+.vz-status { font-size: var(--fs-caption); color: var(--color-fg-muted); margin: 0; }
+.vz-status.error { color: var(--color-bad); }
+
+/* 탭 */
+.vz-tabs { display: flex; gap: var(--gap-xs); border-bottom: 1px solid var(--color-border-line); flex-wrap: wrap; }
+.vz-tab {
+  appearance: none; background: none; border: 0; border-bottom: 2px solid transparent;
+  padding: var(--pad-sm) var(--pad-md); font-size: var(--fs-body);
+  color: var(--color-fg-muted); cursor: pointer;
+}
+.vz-tab[aria-selected="true"] { color: var(--color-fg); border-bottom-color: var(--color-fg); font-weight: var(--fw-medium); }
+.vz-tab:focus-visible { outline: 2px solid var(--chart-reference); outline-offset: 2px; }
+
+/* 탭 내용 */
+.vz-page { display: flex; flex-direction: column; gap: var(--gap-lg); }
+.vz-page[hidden] { display: none !important; }
+.vz-lead { font-size: var(--fs-body); margin: 0; max-width: 80ch; line-height: 1.6; }
+
+/* 필터 영역 */
+.vz-controls {
+  display: flex; flex-wrap: wrap; gap: var(--gap-md); align-items: center;
+  padding: var(--pad-md); background: var(--color-panel);
+  border: 1px solid var(--color-border-line); border-radius: var(--radius);
+}
+.vz-controls label { font-size: var(--fs-caption); color: var(--color-fg-muted); display: flex; align-items: center; gap: var(--gap-sm); flex-wrap: wrap; }
+.vz-controls input[type=range] { width: min(240px, 60vw); }
+.vz-controls .vz-thv { font-variant-numeric: tabular-nums; color: var(--color-fg); font-weight: var(--fw-medium); min-width: 3.5em; }
+.vz-controls select { padding: 2px 6px; }
+.vz-basis { font-size: var(--fs-caption); color: var(--color-fg-muted); margin: 0; flex: 1 1 26rem; line-height: 1.5; }
+
+/* 숫자 타일 */
+.vz-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); gap: var(--gap-md); }
+.vz-tile {
+  background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--radius);
+  padding: var(--pad-md) var(--pad-lg); display: flex; flex-direction: column; gap: var(--gap-xs); min-width: 0;
+}
+.vz-tile .k { font-size: var(--fs-caption); color: var(--color-fg-muted); }
+.vz-tile .n { font-weight: 600; font-size: var(--fs-title); font-variant-numeric: tabular-nums; }
+.vz-tile .d { font-size: var(--fs-caption); color: var(--color-fg-muted); }
+
+/* 차트 카드 */
+.vz-sec { font-size: var(--fs-heading); font-weight: var(--fw-medium); margin: var(--gap-sm) 0 0; }
+.vz-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 30rem), 1fr)); gap: var(--gap-md); }
+.vz-card {
+  background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--radius);
+  padding: var(--pad-lg); display: flex; flex-direction: column; gap: var(--gap-sm); min-width: 0;
+}
+.vz-card.wide { grid-column: 1 / -1; }
+.vz-card h3 { font-size: var(--fs-heading); font-weight: var(--fw-medium); margin: 0; text-wrap: balance; }
+.vz-why { font-size: var(--fs-caption); color: var(--color-fg-muted); margin: 0; line-height: 1.5; }
+.vz-why b { color: var(--color-fg); font-weight: var(--fw-medium); }
+.vz-read { font-size: var(--fs-body); margin: 0; line-height: 1.6; border-top: 1px solid var(--color-border-line); padding-top: var(--pad-sm); }
+.vz-read b, .vz-tile b { font-weight: var(--fw-medium); font-variant-numeric: tabular-nums; }
+.vz-note { font-size: var(--fs-caption); color: var(--color-fg-muted); margin: 0; line-height: 1.5; }
+
+/* 차트 영역 */
+.vz-chart { position: relative; width: 100%; min-height: 300px; }
+.vz-chart svg { display: block; overflow: visible; }
+.vz-chart text { font-family: inherit; }
+
+/* 범례 */
+.vz-legend { display: flex; flex-wrap: wrap; gap: var(--gap-md); font-size: var(--fs-caption); color: var(--color-fg-muted); }
+.vz-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.vz-legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+
+/* 툴팁 */
+.vz-tip {
+  position: absolute; pointer-events: none; z-index: 5;
+  background: #ffffff; border: 1px solid #dcdcdc; border-radius: var(--radius);
+  box-shadow: var(--shadow-popover); padding: var(--pad-xs) var(--pad-sm);
+  font-size: var(--fs-caption); white-space: nowrap;
+}
+.vz-tip .h { color: var(--color-fg-muted); }

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>공공·금융 데이터 시각화</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="vz">
+  <header class="vz-head">
+    <h1 class="vz-title" id="top">공공·금융 데이터 시각화</h1>
+    <p class="vz-sub">빅데이터시각화실무 중간고사 대체과제 · 모든 수치는 고정 시드로 생성한 수업용 합성 데이터에서 이 페이지가 직접 계산합니다. 실제 지역·기관·고객과 무관합니다.</p>
+    <p class="vz-status" id="status">데이터 불러오는 중…</p>
+  </header>
+
+  <div class="vz-tabs" role="tablist">
+    <button class="vz-tab" role="tab" id="tab-public" aria-selected="true" data-page="public">공공 · 119 구급 현장도착</button>
+    <button class="vz-tab" role="tab" id="tab-finance" aria-selected="false" data-page="finance">금융 · 개인신용대출 연체</button>
+  </div>
+
+  <!-- ===================== 공공 ===================== -->
+  <section class="vz-page" id="public" role="tabpanel" aria-labelledby="tab-public">
+    <p class="vz-lead">질문: <b>가상 '한정시'에서 구급차는 어느 지역에 늦게 도착하는가?</b> 출동 1건을 관측 단위로, 접수부터 현장도착까지 걸린 시간을 지역유형(도심·주거·외곽)과 자치구, 행정동, 접수 시간대로 나눠 비교합니다.</p>
+
+    <div class="vz-controls" id="public-controls">
+      <label for="th-range">분석 기준선
+        <input type="range" id="th-range" min="6" max="15" step="1" value="10">
+        <span class="vz-thv" id="th-val">10분</span>
+      </label>
+      <p class="vz-basis">기본값 10분 근거: 대전 평균 현장도착시간 2023년 9분 52초, 2020~2022년 10분 26초~10분 46초(대전연구원 분석, 굿모닝충청 2026.9.3). 이경열 외(2016, 한국콘텐츠학회논문지 16(1))는 도착시간을 10분 경계로 구분해 충남·세종의 10분 초과 출동을 보고. 법정 기준이 아닌 분석 기준선이며, 기준을 바꿔도 결론이 유지되는지 아래 민감도 차트로 확인합니다.</p>
+    </div>
+
+    <div class="vz-tiles">
+      <div class="vz-tile"><span class="k">기준 이내 도착률 · 전체 출동</span><span class="n v" data-source="ems_within" data-field="within" data-tpl="th={th}&scope=전체" data-fmt="pct1">—</span><span class="d">기준 이내 출동 ÷ 전체 출동</span></div>
+      <div class="vz-tile"><span class="k">중앙값 · 현장도착시간</span><span class="n v" data-source="ems_summary" data-field="median" data-tpl="scope=전체" data-fmt="min">—</span><span class="d">출동 절반이 이 시간 안에 도착</span></div>
+      <div class="vz-tile"><span class="k">평균 · 현장도착시간</span><span class="n v" data-source="ems_summary" data-field="mean" data-tpl="scope=전체" data-fmt="min">—</span><span class="d">긴 꼬리 때문에 중앙값보다 큼</span></div>
+      <div class="vz-tile"><span class="k">90백분위 · 현장도착시간</span><span class="n v" data-source="ems_summary" data-field="p90" data-tpl="scope=전체" data-fmt="min">—</span><span class="d">출동 10%는 이보다 늦음</span></div>
+      <div class="vz-tile"><span class="k">도심 − 외곽 격차</span><span class="n v" data-source="ems_gap" data-field="gap" data-tpl="th={th}" data-fmt="pp">—</span><span class="d">기준 이내 도착률 차이</span></div>
+    </div>
+
+    <h2 class="vz-sec">비교 · 어디가 늦는가</h2>
+    <div class="vz-grid">
+      <article class="vz-card" id="p1-type">
+        <h3>지역유형별 기준 이내 도착률</h3>
+        <p class="vz-why"><b>무엇을</b> 세 지역유형의 도착률 차이 · <b>왜 막대</b> 범주 간 크기를 길이로 비교하고, 0에서 시작해 차이를 과장하지 않음. 가로선은 전체 출동 기준값.</p>
+        <div class="vz-chart" id="c-type"></div>
+        <p class="vz-read">외곽의 도착률은 <b class="v" data-source="ems_within" data-field="within" data-tpl="th={th}&scope=외곽" data-fmt="pct1">—</b>로 도심 <b class="v" data-source="ems_within" data-field="within" data-tpl="th={th}&scope=도심" data-fmt="pct1">—</b>보다 낮습니다. 외곽 출동 중 65세 이상 환자 비중은 <b class="v" data-source="ems_summary" data-field="old_share" data-tpl="scope=외곽" data-fmt="pct1">—</b>(도심 <b class="v" data-source="ems_summary" data-field="old_share" data-tpl="scope=도심" data-fmt="pct1">—</b>)입니다.</p>
+      </article>
+      <article class="vz-card" id="p1-gu">
+        <h3>자치구별 기준 이내 도착률 (낮은 순)</h3>
+        <p class="vz-why"><b>무엇을</b> 정책 단위인 자치구의 순위와 격차 · <b>왜 정렬 가로막대</b> 항목 이름이 길고 순위를 위에서 아래로 읽게 하기 위해. 세로선은 전체 기준값.</p>
+        <div class="vz-chart" id="c-gu"></div>
+        <p class="vz-read">가장 낮은 마루구 <b class="v" data-source="ems_within" data-field="within" data-tpl="th={th}&scope=마루구" data-fmt="pct1">—</b>와 가장 높은 가온구 <b class="v" data-source="ems_within" data-field="within" data-tpl="th={th}&scope=가온구" data-fmt="pct1">—</b>의 차이가 큽니다. 마루구는 8개 동 모두 외곽 유형입니다.</p>
+      </article>
+    </div>
+
+    <h2 class="vz-sec">분포 · 평균 뒤에 숨은 차이</h2>
+    <div class="vz-grid">
+      <article class="vz-card wide" id="p2-hist">
+        <h3>전체 출동의 현장도착시간 분포</h3>
+        <p class="vz-why"><b>무엇을</b> 값이 몰리는 구간과 오른쪽 꼬리 · <b>왜 히스토그램</b> 평균 하나로 보이지 않는 집중·퍼짐·꼬리를 1분 구간 빈도로 보여줌. 세로축은 인구가 아니라 출동 건수, 음영은 기준 이내 구간.</p>
+        <div class="vz-chart" id="c-hist"></div>
+        <p class="vz-read">평균 <b class="v" data-source="ems_summary" data-field="mean" data-tpl="scope=전체" data-fmt="min">—</b>이 중앙값 <b class="v" data-source="ems_summary" data-field="median" data-tpl="scope=전체" data-fmt="min">—</b>보다 큰 것은 오른쪽 꼬리 때문입니다. 20분을 넘는 출동이 <b class="v" data-source="ems_summary" data-field="over20" data-tpl="scope=전체" data-fmt="pct1">—</b> 있습니다.</p>
+      </article>
+      <article class="vz-card" id="p3-box">
+        <h3>지역유형별 도착시간의 퍼짐</h3>
+        <p class="vz-why"><b>무엇을</b> 집단별 대표값과 퍼짐 · <b>왜 박스플롯</b> 중앙값·사분위범위·꼬리를 한 줄에 나란히 비교. 상자 = Q1~Q3, 굵은 선 = 중앙값, 수염 = 10~90백분위.</p>
+        <div class="vz-chart" id="c-box"></div>
+        <p class="vz-read">외곽은 중앙값 <b class="v" data-source="ems_summary" data-field="median" data-tpl="scope=외곽" data-fmt="min">—</b>, 90백분위 <b class="v" data-source="ems_summary" data-field="p90" data-tpl="scope=외곽" data-fmt="min">—</b>로 도심(90백분위 <b class="v" data-source="ems_summary" data-field="p90" data-tpl="scope=도심" data-fmt="min">—</b>)보다 퍼짐과 꼬리가 큽니다.</p>
+      </article>
+      <article class="vz-card" id="p6-sens">
+        <h3>기준선을 바꾸면 결론이 달라지는가</h3>
+        <p class="vz-why"><b>무엇을</b> 기준 6~15분에서 유형별 도착률 · <b>왜 선그래프</b> 연속된 기준값에 따른 변화와 선의 교차 여부를 보여줌. 점선 = 현재 기준.</p>
+        <div class="vz-chart" id="c-sens"></div>
+        <p class="vz-read">6분 기준 격차 <b class="v" data-source="ems_gap" data-field="gap" data-tpl="th=6" data-fmt="pp">—</b>, 15분 기준 격차 <b class="v" data-source="ems_gap" data-field="gap" data-tpl="th=15" data-fmt="pp">—</b>. 격차의 크기는 기준에 따라 달라지지만 도심 &gt; 주거 &gt; 외곽 순서는 모든 기준에서 유지됩니다.</p>
+      </article>
+    </div>
+
+    <h2 class="vz-sec">관계와 시간 · 무엇과 함께 움직이는가</h2>
+    <div class="vz-grid">
+      <article class="vz-card" id="p4-scatter">
+        <h3>행정동별 센터 거리와 기준 이내 도착률</h3>
+        <p class="vz-why"><b>무엇을</b> 두 수치 변수의 관계 · <b>왜 산점도</b> 점 1개 = 행정동 1곳, 원 크기 = 출동 건수. 상관은 함께 움직임을 뜻할 뿐 인과가 아님.</p>
+        <div class="vz-chart" id="c-scatter"></div>
+        <p class="vz-read">40개 동에서 최근접 119안전센터 거리와 도착률의 상관계수는 <b class="v" data-source="ems_dong_r" data-field="r" data-tpl="th={th}" data-fmt="r">—</b>입니다.</p>
+      </article>
+      <article class="vz-card" id="p5-hour">
+        <h3>접수 시간대별 기준 이내 도착률</h3>
+        <p class="vz-why"><b>무엇을</b> 하루 중 언제 낮아지는가 · <b>왜 선그래프</b> 시간 순서의 변화를 세 유형이 같은 축에서 비교. 회색 띠 = 출퇴근 시간대(7~9시, 17~19시).</p>
+        <div class="vz-chart" id="c-hour"></div>
+        <p class="vz-read">세 유형 모두 출퇴근 시간대에 도착률이 낮아집니다. 시간대별 표본이 작은 외곽(시간당 약 110건)은 변동이 큽니다.</p>
+      </article>
+    </div>
+    <p class="vz-note">한계: 합성 데이터이며 거리·속도·지원출동 규칙은 생성기의 가정입니다. 실제 지역의 서비스 수준을 뜻하지 않으며, 원인 판단에는 구급대 수·출동 중복·도로망 자료가 추가로 필요합니다.</p>
+  </section>
+
+  <!-- ===================== 금융 ===================== -->
+  <section class="vz-page" id="finance" role="tabpanel" aria-labelledby="tab-finance" hidden>
+    <p class="vz-lead">질문: <b>가상 '한정은행' 개인신용대출에서 어느 대출군을 먼저 점검해야 하는가?</b> 2025년 1~12월 취급 계약을 2026년 6월 말까지 관찰했습니다. 연체율 = 30일 이상 연체잔액 ÷ 같은 집단의 대출잔액(금액 기준)입니다.</p>
+
+    <div class="vz-controls" id="finance-controls">
+      <label for="grade-sel">코호트·추이 차트의 등급
+        <select id="grade-sel">
+          <option value="전체">전체</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+        </select>
+      </label>
+      <p class="vz-basis">등급을 고르면 코호트 히트맵과 월별 추이가 그 등급만으로 다시 계산됩니다. 등급 구성이 달라진 효과를 빼고 같은 등급끼리 비교할 때 씁니다.</p>
+    </div>
+
+    <div class="vz-tiles">
+      <div class="vz-tile"><span class="k">연체율 · 2026-06 말</span><span class="n v" data-source="fin_grade" data-field="rate" data-tpl="grade=전체" data-fmt="pct2">—</span><span class="d">30일+ 연체잔액 ÷ 대출잔액</span></div>
+      <div class="vz-tile"><span class="k">대출잔액</span><span class="n v" data-source="fin_grade" data-field="bal_eok" data-tpl="grade=전체" data-fmt="eok">—</span><span class="d">정상·연체 계약의 월말 잔액</span></div>
+      <div class="vz-tile"><span class="k">30일+ 연체잔액</span><span class="n v" data-source="fin_grade" data-field="dq_eok" data-tpl="grade=전체" data-fmt="eok">—</span><span class="d">손실 노출 규모</span></div>
+      <div class="vz-tile"><span class="k">등급별 연체율 단순평균</span><span class="n v" data-source="fin_avg" data-field="simple_avg" data-row="0" data-fmt="pct2">—</span><span class="d">전체 연체율이 아님: 잔액 가중이 빠짐</span></div>
+    </div>
+
+    <h2 class="vz-sec">비교 · 비율과 규모</h2>
+    <div class="vz-grid">
+      <article class="vz-card" id="f1-rate">
+        <h3>① 심각도: 등급별 연체율</h3>
+        <p class="vz-why"><b>무엇을</b> 등급별 연체의 심각도 · <b>왜 막대</b> 순서가 있는 등급 간 크기 비교. 비율과 금액은 단위가 달라 이중축 대신 두 차트로 분리. 가로선 = 전체 연체율.</p>
+        <div class="vz-chart" id="c-rate"></div>
+        <p class="vz-read">D등급 연체율 <b class="v" data-source="fin_grade" data-field="rate" data-tpl="grade=D" data-fmt="pct2">—</b>은 A등급 <b class="v" data-source="fin_grade" data-field="rate" data-tpl="grade=A" data-fmt="pct2">—</b>보다 높습니다.</p>
+      </article>
+      <article class="vz-card" id="f1-amt">
+        <h3>② 노출 규모: 등급별 연체잔액</h3>
+        <p class="vz-why"><b>무엇을</b> 손실에 노출된 금액 · <b>왜 막대</b> 같은 등급 순서로 금액을 비교해 ①과 나란히 읽음. 라벨 괄호 = 전체 연체잔액 중 비중.</p>
+        <div class="vz-chart" id="c-amt"></div>
+        <p class="vz-read">연체잔액이 가장 큰 등급은 C(<b class="v" data-source="fin_grade" data-field="dq_eok" data-tpl="grade=C" data-fmt="eok">—</b>, 전체의 <b class="v" data-source="fin_grade" data-field="dq_share" data-tpl="grade=C" data-fmt="pct1">—</b>)입니다. 비율이 가장 높은 D와 규모가 가장 큰 C가 다르므로 두 기준을 함께 봐야 합니다.</p>
+      </article>
+    </div>
+
+    <h2 class="vz-sec">구성 · 채널 차이는 어디서 오는가</h2>
+    <div class="vz-grid">
+      <article class="vz-card" id="f2-ch">
+        <h3>채널별 연체율: 전체 vs 같은 등급 안</h3>
+        <p class="vz-why"><b>무엇을</b> 모바일과 대면의 연체율 · <b>왜 그룹 막대</b> 전체 비교와 등급 내 비교를 같은 축에 나란히 두어 결론이 바뀌는지 확인.</p>
+        <div class="vz-chart" id="c-ch"></div>
+        <p class="vz-read">전체로는 모바일 <b class="v" data-source="fin_channel" data-field="rate" data-tpl="grade=전체&channel=모바일" data-fmt="pct2">—</b> &gt; 대면 <b class="v" data-source="fin_channel" data-field="rate" data-tpl="grade=전체&channel=대면" data-fmt="pct2">—</b>이지만, B등급 안에서는 모바일 <b class="v" data-source="fin_channel" data-field="rate" data-tpl="grade=B&channel=모바일" data-fmt="pct2">—</b>, 대면 <b class="v" data-source="fin_channel" data-field="rate" data-tpl="grade=B&channel=대면" data-fmt="pct2">—</b>입니다.</p>
+      </article>
+      <article class="vz-card" id="f2-mix">
+        <h3>채널별 등급 구성 (잔액 기준)</h3>
+        <p class="vz-why"><b>무엇을</b> 각 채널 잔액이 어떤 등급으로 이뤄졌는가 · <b>왜 100% 누적 막대</b> 전체를 구성하는 비중을 채널끼리 같은 길이에서 비교.</p>
+        <div class="vz-chart" id="c-mix"></div>
+        <p class="vz-read">C·D등급 비중이 모바일은 <b class="v" data-source="fin_cd" data-field="cd_share" data-tpl="channel=모바일" data-fmt="pct1">—</b>, 대면은 <b class="v" data-source="fin_cd" data-field="cd_share" data-tpl="channel=대면" data-fmt="pct1">—</b>입니다. 모바일의 전체 연체율이 높은 데에는 등급 구성 차이가 섞여 있습니다.</p>
+      </article>
+    </div>
+
+    <h2 class="vz-sec">시간 · 취급 시기와 월별 추이</h2>
+    <div class="vz-grid">
+      <article class="vz-card wide" id="f3-cohort">
+        <h3>취급월 코호트별 누적 30일+ 연체 진입률 (건수 기준)</h3>
+        <p class="vz-why"><b>무엇을</b> 같은 경과월에서 최근 취급분이 더 빨리 연체되는가 · <b>왜 히트맵</b> 행 = 취급월, 열 = 경과월로 같은 열끼리 비교. 색이 진할수록 높고 숫자를 함께 표시. '—' = 아직 관찰되지 않은 칸(0이 아님).</p>
+        <div class="vz-chart" id="c-cohort"></div>
+        <p class="vz-read">경과 6개월 시점 누적 진입률은 1~3월 취급분 <b class="v" data-source="fin_mob6" data-field="rate" data-tpl="group=1~3월 취급&grade={grade}" data-fmt="pct2">—</b>, 10~12월 취급분 <b class="v" data-source="fin_mob6" data-field="rate" data-tpl="group=10~12월 취급&grade={grade}" data-fmt="pct2">—</b>입니다(등급: <span class="grade-name">전체</span>). 같은 기간 신규 취급의 C·D 비중은 <b class="v" data-source="fin_mob6" data-field="cd_share" data-tpl="group=1~3월 취급&grade=전체" data-fmt="pct1">—</b>에서 <b class="v" data-source="fin_mob6" data-field="cd_share" data-tpl="group=10~12월 취급&grade=전체" data-fmt="pct1">—</b>로 늘었습니다.</p>
+      </article>
+      <article class="vz-card wide" id="f4-trend">
+        <h3>월말 연체율 추이</h3>
+        <p class="vz-why"><b>무엇을</b> 포트폴리오 연체율의 월별 변화 · <b>왜 선그래프</b> 비율의 시간 추이를 점과 직선으로 연결(곡선은 없는 값을 암시). 2026년부터는 신규 취급이 없는 닫힌 포트폴리오.</p>
+        <div class="vz-chart" id="c-trend"></div>
+        <p class="vz-read">연체율은 2025-12 말 <b class="v" data-source="fin_trend" data-field="rate" data-tpl="month=2025-12&grade={grade}" data-fmt="pct2">—</b>에서 2026-06 말 <b class="v" data-source="fin_trend" data-field="rate" data-tpl="month=2026-06&grade={grade}" data-fmt="pct2">—</b>로 변했습니다(등급: <span class="grade-name">전체</span>). 신규 취급 없이 기존 계약의 경과월이 늘어난 구간이므로 신규 포함 포트폴리오와 직접 비교하지 않습니다.</p>
+      </article>
+    </div>
+    <p class="vz-note">한계: 합성 데이터이며 등급별 연체 확률·정상화·상각 규칙은 생성기의 가정입니다. 차트는 관찰된 차이를 보여줄 뿐 원인이나 향후 연체율을 예측하지 않습니다.</p>
+  </section>
+</div>
+
+<!-- D3 v7 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<!-- 우리 코드 -->
+<script src="js/main.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/public.js"></script>
+<script src="js/finance.js"></script>
+<script src="js/ui.js"></script>
+</body>
+</html>
