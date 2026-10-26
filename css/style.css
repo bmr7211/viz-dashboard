@@ -23,21 +23,22 @@ body { margin: 0; background: var(--color-bg); }
 
 /* ===== 페이지 전체 ===== */
 .vz {
-  font-family: 'Noto Sans KR', system-ui, -apple-system, 'Apple SD Gothic Neo', sans-serif;
-  color: var(--color-fg);
-  max-width: 1280px;
-  margin: 0 auto;
-  padding-block: var(--pad-lg);
-  padding-inline: max(16px, 3vw);
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap-lg);
+    font-family: 'Noto Sans KR', system-ui, -apple-system, 'Apple SD Gothic Neo', sans-serif;
+    color: var(--color-fg);
+    max-width: 1280px;
+    margin: 0 auto;
+    padding-top: 64px;
+    padding-bottom: var(--pad-lg);
+    padding-inline: max(16px, 3vw);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
 }
 .vz button, .vz select, .vz input { font-family: inherit; }
 
 /* 머리말 */
 .vz-head { display: flex; flex-direction: column; gap: var(--gap-xs); }
-.vz-title { font-weight: 600; font-size: var(--fs-title); margin: 0; text-wrap: balance; }
+.vz-title { font-weight: 700; font-size: clamp(30px, 4.5vw, 42px); line-height: 1.25; margin: 0 0 4px; text-wrap: balance; }
 .vz-sub { color: var(--color-fg-muted); font-size: var(--fs-body); margin: 0; max-width: 70ch; }
 .vz-status { font-size: var(--fs-caption); color: var(--color-fg-muted); margin: 0; }
 .vz-status.error { color: var(--color-bad); }
